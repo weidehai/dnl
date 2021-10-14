@@ -1,9 +1,9 @@
-export default function dnl(options: {
+export declare function dnl(options: {
     url: string;
-    method: string;
-    data?: string;
+    method: 'GET' | 'POST';
     header: {
         [key: string]: string;
     };
     name?: string;
-}): void;
+}): Promise<void>;
+export declare function upl(fileEle: HTMLInputElement, address: string, data?: Record<any, any>, config?: Record<any, any>): void;

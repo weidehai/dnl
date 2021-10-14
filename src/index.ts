@@ -1,23 +1,41 @@
 import Url from 'url-parse';
+import Http from './utils/http';
 
-export default function dnl(options: {
+export async function dnl(options: {
   url: string;
-  method: string;
-  data?: string;
+  method: 'GET' | 'POST';
   header: { [key: string]: string };
   name?: string;
-}): void {
-  const { url, method = 'GET', data, name } = options;
+}): Promise<void> {
+  const { url, method = 'GET', name } = options;
   const urlObj = new Url(url);
-  const xhr = new XMLHttpRequest();
-  xhr.open(method, url);
-  xhr.responseType = 'blob';
-  xhr.onload = () => {
-    const resource = URL.createObjectURL(xhr.response);
-    const a = document.createElement('a');
-    a.href = resource;
-    a.download = name ?? urlObj.pathname.split('/').pop();
-    a.click();
-  };
-  xhr.send(data);
+  const response = await Http.get(method, url, { responseType: 'blob' });
+  const resource = URL.createObjectURL(response);
+  const a = document.createElement('a');
+  a.href = resource;
+  a.download = name ?? urlObj.pathname.split('/').pop();
+  a.click();
+}
+
+export function upl(
+  fileEle: HTMLInputElement,
+  address: string,
+  data?: Record<any, any>,
+  config?: Record<any, any>
+): void {
+  fileEle.addEventListener('change', async () => {
+    const file = fileEle.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    if (data) {
+      for (const key of Object.keys(data)) {
+        formData.append(key, data[key]);
+      }
+    }
+    // if (!config.header['Content-Type']) {
+    //   config.header['Content-Type'] = 'multipart/form-data';
+    // }
+    const response = await Http.post(address, formData, config);
+    console.log(response);
+  });
 }

@@ -22,15 +22,15 @@ const baseConfig = {
 if (process.env.NODE_ENV === 'development') {
   baseConfig.output.push({
     file: './dist/main.js',
+    name: 'fileTrsp',
     format: 'umd',
-    name: 'dnl',
   });
 }
 if (process.env.NODE_ENV === 'production') {
   baseConfig.output.push({
     file: './dist/main.min.js',
+    name: 'fileTrsp',
     format: 'umd',
-    name: 'dnl',
     plugins: [terser()],
   });
 }
